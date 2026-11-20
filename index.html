@@ -62,7 +62,7 @@ const prizes=[
 const rawSaved=localStorage.getItem("iwashinCasinoCoins");
 const parsedSaved=rawSaved===null?NaN:Number(rawSaved);
 let coins=Number.isFinite(parsedSaved)&&parsedSaved>=0?parsedSaved:500;
-let activeView="roulette",selectedFish=0,stake=25;
+let activeView="roulette",selectedFish=0,stake=25,slotTimer=null;
 const panel=document.getElementById("panel");
 function save(){localStorage.setItem("iwashinCasinoCoins",String(coins));document.getElementById("balance").textContent=coins.toLocaleString("ja-JP")}
 function setResult(text,type=""){const e=document.getElementById("result");if(e){e.textContent=text;e.className="result "+type}}
@@ -73,9 +73,9 @@ function renderRoulette(){
  '<div class="section-label">どのお魚にする？</div><div class="fish-picks">'+fish.map((f,i)=>'<button class="fish-pick '+(selectedFish===i?'selected':'')+'" data-fish="'+i+'"><span class="emoji">'+f.emoji+'</span>'+f.name+'</button>').join("")+'</div>'+
  stakeControls()+'<div class="actions"><button class="play" id="play" '+(insufficient()?'disabled':'')+'>ルーレットを回す</button><span id="result" class="result">当たるとコインが3倍！</span></div><div class="roulette-display" id="wheel"><div><div class="fish-result">🌊</div><small>氷見の海からお魚がやってくる！</small></div></div>';
 }
-function renderSlots(){panel.innerHTML='<div class="game-head"><div><h2>🎰 フィッシュスロット</h2><p>3つのお魚をそろえてコインをゲット</p></div><span class="tag">3 個そろうと 10 倍</span></div>'+
+function renderSlots(){panel.innerHTML='<div class="game-head"><div><h2>🎰 フィッシュスロット</h2><p>止めたいタイミングでボタンを押そう</p></div><span class="tag">3 個そろうと 10 倍</span></div>'+
  '<div class="slot-machine" aria-label="スロット"><div class="reel" id="r0">🐟</div><div class="reel" id="r1">🦑</div><div class="reel" id="r2">🦀</div></div>'+
- '<div class="actions"><button class="play" id="play" '+(coins<20?'disabled':'')+'>20コインで回す</button><span id="result" class="result">2つそろうと2倍、3つなら10倍！</span></div><div class="section-label">お魚がそろうかな？</div>'}
+ '<div class="actions"><button class="play" id="play" '+(coins<20?'disabled':'')+'>20コインで回す</button><span id="result" class="result">回転中に「停止」を押せます</span></div><div class="section-label">3つ揃いで200コイン、2つ揃いで40コイン獲得</div>'}
 function renderCards(){panel.innerHTML='<div class="game-head"><div><h2>🃏 お魚ハイカード</h2><p>イワシんとカード勝負！数字が大きい方の勝ち</p></div><span class="tag">勝ったら 2 倍</span></div>'+
  '<div class="card-table"><div class="playing-card" id="player-card">🐟</div><div class="vs">VS</div><div class="playing-card right" id="house-card">🐡</div></div>'+
  '<div class="actions"><button class="play" id="play" '+(coins<25?'disabled':'')+'>25コインで勝負</button><span id="result" class="result">Aが一番強いカード！</span></div>'}
@@ -88,16 +88,29 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>chan
 panel.addEventListener("click",e=>{
  const fs=e.target.closest("[data-fish]");if(fs){selectedFish=Number(fs.dataset.fish);render();return}
  const st=e.target.closest("[data-stake]");if(st){stake=Number(st.dataset.stake);render();return}
- if(e.target.id==="play"){if(activeView==="roulette")playRoulette();if(activeView==="slots")playSlots();if(activeView==="cards")playCards()}
+ if(e.target.id==="play"){if(activeView==="roulette")playRoulette();if(activeView==="slots"){if(slotTimer!==null)stopSlots();else playSlots()}if(activeView==="cards")playCards()}
 });
 function playRoulette(){
  if(coins<stake)return;coins-=stake;save();const btn=document.getElementById("play");btn.disabled=true;setResult("ルーレットが回転中…");
  const box=document.getElementById("wheel"),small=box.querySelector("small"),icon=box.querySelector(".fish-result");let ticks=0;
  const timer=setInterval(()=>{const f=fish[Math.floor(Math.random()*fish.length)];icon.textContent=f.emoji;small.textContent=f.name+" が通りすぎた…";ticks++;if(ticks>=12){clearInterval(timer);const result=fish[Math.floor(Math.random()*fish.length)];icon.textContent=result.emoji;small.textContent="出たのは「"+result.name+"」！";if(fish[selectedFish].name===result.name){const prize=stake*3;coins+=prize;setResult("的中！ "+prize+"コイン獲得！","win")}else setResult("はずれ…また挑戦してね","lose");save();btn.disabled=coins<stake}},75)
 }
+function settleSlots(ids){
+ const counts=ids.reduce((a,n)=>(a[n]=(a[n]||0)+1,a),{}),max=Math.max(...Object.values(counts));
+ if(max===3){coins+=200;setResult("大当たり！ 200コイン獲得！","win")}else if(max===2){coins+=40;setResult("おしい！ 40コイン獲得！","win")}else setResult("ざんねん…次こそそろえよう","lose");
+ save();const btn=document.getElementById("play");if(btn){btn.textContent="20コインでもう一度";btn.disabled=coins<20}
+}
+function stopSlots(){
+ if(slotTimer===null)return;clearInterval(slotTimer);slotTimer=null;
+ const reels=[0,1,2].map(i=>document.getElementById("r"+i));
+ const ids=reels.map(r=>fish.findIndex(f=>f.emoji===r.textContent));
+ setResult("手動で停止！出目を判定します");settleSlots(ids)
+}
 function playSlots(){
- const cost=20;if(coins<cost)return;coins-=cost;save();const btn=document.getElementById("play");btn.disabled=true;setResult("お魚がそろうかな…");
- const reels=[0,1,2].map(i=>document.getElementById("r"+i));let ticks=0;const timer=setInterval(()=>{reels.forEach(r=>r.textContent=fish[Math.floor(Math.random()*fish.length)].emoji);ticks++;if(ticks>10){clearInterval(timer);const ids=reels.map(()=>Math.floor(Math.random()*fish.length));reels.forEach((r,i)=>r.textContent=fish[ids[i]].emoji);const counts=ids.reduce((a,n)=>(a[n]=(a[n]||0)+1,a),{});const max=Math.max(...Object.values(counts));if(max===3){coins+=200;setResult("大当たり！ 200コイン獲得！","win")}else if(max===2){coins+=40;setResult("おしい！ 40コイン獲得！","win")}else setResult("ざんねん…次こそそろえよう","lose");save();btn.disabled=coins<20}},80)
+ const cost=20;if(coins<cost)return;coins-=cost;save();
+ const btn=document.getElementById("play");btn.textContent="⏹ 停止";btn.disabled=false;setResult("好きなタイミングで停止！");
+ const reels=[0,1,2].map(i=>document.getElementById("r"+i));let ticks=0;
+ slotTimer=setInterval(()=>{reels.forEach(r=>r.textContent=fish[Math.floor(Math.random()*fish.length)].emoji);ticks++;if(ticks>=30){clearInterval(slotTimer);slotTimer=null;const ids=reels.map(()=>Math.floor(Math.random()*fish.length));reels.forEach((r,i)=>r.textContent=fish[ids[i]].emoji);settleSlots(ids)}},80)
 }
 function playCards(){
  const cost=25;if(coins<cost)return;coins-=cost;save();const btn=document.getElementById("play");btn.disabled=true;setResult("カードを配っています…");
