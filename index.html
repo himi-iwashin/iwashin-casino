@@ -164,8 +164,6 @@ render();
 <style>.wheel{background:radial-gradient(circle at center,#12503a 0 22%,transparent 22.5% 68%,#d8b869 68.5% 74%,#263c30 74.5%),var(--wheel-sectors)!important;isolation:isolate}.wheel-number{width:21px;height:21px;padding:0;line-height:1;font-size:clamp(8px,2.5vw,10px);z-index:1}.wheel:before{content:'';position:absolute;z-index:6;top:-5px;left:50%;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:15px solid #fff1ae}.ball-orbit{position:absolute;inset:15%;border-radius:50%;pointer-events:none;z-index:4}.ball-orbit i{position:absolute;left:50%;top:-6px;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,#dce4e1 55%,#788a85);box-shadow:0 0 8px #fff,0 1px 4px #001}.wheel.spin{animation:wheelspin 4.2s cubic-bezier(.12,.76,.12,1)}.wheel.spin .ball-orbit{animation:ballorbit 4.2s cubic-bezier(.16,.7,.22,1)}@keyframes ballorbit{to{transform:rotate(-2520deg)}}.dealer-mini{display:flex;align-items:center;gap:8px;min-height:72px;padding:8px 10px;border:1px solid #d6bd78;border-radius:14px;background:#073d30;color:#fff3c8}.dealer-mini .iwasvg{width:58px;flex:0 0 58px}.dealer-info{display:grid;gap:3px}.dealer-info b{font-size:13px}.dealer-info small{color:#ffeaa4;font-size:12px;line-height:1.35}@media(max-width:460px){.roulette-layout{grid-template-columns:28px repeat(12,minmax(0,1fr))}.roulette-num,.zero-cell{font-size:clamp(8px,2.7vw,10px);padding:0;min-width:0}}
 </style>
 
-</body>
-</html>
 <script>
 // Final roulette and Iwashin card-game layer
 let dealerTalk=null,cardMode='blackjack',bjState=null,pokerState=null;
@@ -462,3 +460,17 @@ panel.addEventListener('click',e=>{let k=e.target.closest('[data-kind]');if(k){k
 draw();
 })();
 </script>
+<style>
+/* Keep the dealer mascot at a fixed size in every game and viewport. */
+img.iwasvg{display:block;max-width:100%;height:auto;object-fit:contain}
+.mini-dealer{min-width:0;overflow:hidden}
+.mini-dealer>img.iwasvg{width:74px!important;height:64px!important;max-width:74px!important;max-height:64px!important;flex:0 0 74px;object-fit:contain}
+.mini-dealer>span{min-width:0;overflow-wrap:anywhere}
+.mini-card .face{display:grid;place-items:center;min-width:0;overflow:hidden}
+.mini-card .face img.iwasvg{width:100%;height:100%;max-width:48px;max-height:54px;object-fit:contain}
+@media(max-width:600px){.mini-dealer{gap:8px;padding:8px}.mini-dealer>img.iwasvg{width:58px!important;height:52px!important;max-width:58px!important;max-height:52px!important;flex-basis:58px}}
+@media(min-width:721px){.mini-table{max-width:100%;min-width:0}.mini-menu{align-items:center}.mini-dealer{max-width:760px}}
+</style>
+
+</body>
+</html>
