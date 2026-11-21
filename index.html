@@ -539,5 +539,32 @@ body.casino-lobby-open .lobby-heading{display:flex}body.casino-lobby-open .casin
 })();
 </script>
 
+<style>
+/* Give floor cards breathing room and turn the slot reels into an arcade cabinet. */
+body.casino-lobby-open .casino-zones{display:grid!important;width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.7vw,20px)}
+.casino-zone{display:flex;width:100%;min-width:0;min-height:270px;flex-direction:column;box-sizing:border-box;text-align:left}
+.casino-zone .zone-art{flex:0 0 auto;width:100%;box-sizing:border-box}
+.casino-zone .zone-copy{display:flex;flex:1 1 auto;min-width:0;width:100%;box-sizing:border-box;flex-direction:column;padding:15px 18px 14px;text-align:left}
+.casino-zone .zone-title{line-height:1.4;overflow-wrap:anywhere}
+.casino-zone .zone-desc{min-height:0;flex:1 1 auto;line-height:1.65;overflow-wrap:anywhere;word-break:normal}
+.casino-zone .zone-enter{width:100%;min-width:0;box-sizing:border-box;gap:12px;margin-top:12px;padding:11px 5px 2px;border-top:1px solid #ffffff28;line-height:1.4}
+.casino-zone .zone-enter strong{flex:0 0 auto;padding-right:3px;font-size:20px}
+.slot-reels{position:relative;isolation:isolate;max-width:680px;margin:29px auto 20px;padding:27px clamp(12px,3vw,28px) 18px;border:5px ridge #e4bf61;border-radius:26px;background:radial-gradient(ellipse at 50% 0%,#ffe38c35,transparent 45%),linear-gradient(145deg,#9d5526 0%,#6c321e 34%,#301d28 100%);box-shadow:inset 0 0 0 4px #fff2,inset 0 -14px 24px #170d19aa,0 14px 30px #0007}
+.slot-reels:before{content:"✦  IWASHIN  FISH SLOT  ✦";position:absolute;z-index:2;top:0;left:50%;transform:translate(-50%,-50%);max-width:90%;padding:7px 20px;border:2px solid #ffe58c;border-radius:999px;background:linear-gradient(180deg,#b83d48,#702332);box-shadow:0 0 18px #ffdc7666;color:#fff2bd;font-size:clamp(11px,2.5vw,15px);font-weight:950;letter-spacing:.12em;white-space:nowrap}
+.slot-reel{position:relative;padding:14px 9px 10px;border:2px solid #e8cc7e;border-radius:17px;background:linear-gradient(155deg,#572b2a,#281d2b);box-shadow:inset 0 0 0 3px #ffffff12,0 5px 12px #100a14aa}
+.slot-reel:before{content:"★";position:absolute;top:4px;left:50%;transform:translateX(-50%);color:#ffe18a;font-size:10px;text-shadow:0 0 9px #ffd865}
+.slot-reel .reel-window{width:100%;height:clamp(96px,16vw,138px);border:6px solid #cba349;border-radius:13px;background:linear-gradient(180deg,#fff8df,#ead8a8);box-shadow:inset 0 0 0 3px #fff9,inset 0 0 18px #634a2680,0 3px 9px #0008;overflow:hidden}
+.slot-reel .reel-strip{width:100%}
+.slot-reel .reel-strip img{max-width:100%;object-fit:contain}
+.slot-reel .reel-stop{width:100%;min-height:39px;border:2px solid #ffd978;border-radius:10px;background:linear-gradient(180deg,#f36b58,#b83239);color:#fff8df;font-weight:950;box-shadow:inset 0 2px #ffffff55,0 3px 0 #6d242b}
+.slot-reel .reel-stop:disabled{background:linear-gradient(180deg,#5f7774,#354b4d);border-color:#849b8a;box-shadow:none;color:#e1e7d8}
+.slot-modes{display:flex;max-width:680px;margin:12px auto 0;padding:5px;gap:6px;border:1px solid #c9a34e;border-radius:14px;background:#092a38}
+.slot-mode{flex:1;min-width:0;border:1px solid #527487;border-radius:10px;padding:10px 8px;background:#10374c;color:#dce9e1;font-weight:850}
+.slot-mode.selected{border-color:#ffe18a;background:linear-gradient(145deg,#c08b35,#81541f);color:#fff8df;box-shadow:0 0 14px #ffd76a33}
+@media(max-width:800px){body.casino-lobby-open .casino-zones{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){body.casino-lobby-open .casino-zones{gap:9px}.casino-zone{min-height:244px}.casino-zone .zone-copy{padding:11px 12px 12px}.casino-zone .zone-enter{padding-top:9px}.slot-reels{gap:7px;padding:24px 9px 12px;border-width:4px;border-radius:20px}.slot-reel{padding:12px 5px 8px;border-radius:13px}.slot-reel .reel-window{height:clamp(88px,24vw,116px);border-width:4px}.slot-reel .reel-stop{font-size:12px;padding:7px 3px}.slot-mode{font-size:12px;padding:9px 4px}}
+@media(max-width:360px){body.casino-lobby-open .casino-zones{grid-template-columns:1fr}.casino-zone{min-height:0}.casino-zone .zone-desc{min-height:0}}
+@media(prefers-reduced-motion:reduce){.slot-reel,.slot-mode{transition:none!important}}
+</style>
 </body>
 </html>
