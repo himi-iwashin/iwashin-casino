@@ -266,3 +266,9 @@ panel.addEventListener('click',e=>{const mode=e.target.closest('[data-slot-mode]
 function slotSetFace(i,n){const box=document.getElementById('reel-window-'+i);if(!box)return;const strip=box.querySelector('.reel-strip');strip.innerHTML=Array.from({length:9},(_,j)=>slotFace(i,(n+j+slotStamps.length-2)%slotStamps.length)).join('');strip.style.transform='translateY(-'+(2*100/9)+'%)';box.classList.remove('rolling')}
 function slotFinishIfDone(){if(slotReelStops.some(v=>!v))return;slotTimer=null;slotReelTimers.forEach(t=>{if(t)clearInterval(t)});slotReelTimers=[null,null,null];const ids=[0,1,2].map(i=>Number(document.querySelectorAll('#reel-window-'+i+' img[data-face]')[2]?.dataset.face||0));settleSlots(ids)}
 </script>
+
+<script>
+/* A calmer reel cadence with more viewing time in auto mode. */
+window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];coins-=20;save();slotSpinRun++;slotReelStops=[false,false,false];slotTimer=true;renderSlots();[0,1,2].forEach(i=>{const box=document.getElementById('reel-window-'+i),strip=box.querySelector('.reel-strip');box.classList.add('rolling');strip.style.transform='';slotReelTimers[i]=setInterval(()=>{const n=Math.floor(Math.random()*slotStamps.length);strip.innerHTML=Array.from({length:9},(_,j)=>slotFace(i,(n+j)%slotStamps.length)).join('');strip.style.transform='translateY(-'+(15+Math.random()*45)+'%)'},190)});if(slotMode==='auto'){[0,1,2].forEach(i=>slotAutoTimeouts.push(setTimeout(()=>stopSlots(i),2400+i*850)))}setResult(slotMode==='auto'?'ゆっくり回転中。リールが順番に止まります':'リールごとの停止ボタンを押してね！')};
+</script>
+<style>.reel-strip{transition:transform .24s ease-out!important}.reel-window.rolling .reel-strip{filter:blur(.55px)!important}</style>
