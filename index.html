@@ -277,3 +277,27 @@ window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAu
 /* Re-enable the next-spin control immediately after all three reels settle. */
 function slotFinishIfDone(){if(slotReelStops.some(v=>!v))return;slotTimer=null;slotReelTimers.forEach(t=>{if(t)clearInterval(t)});slotReelTimers=[null,null,null];slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];const ids=[0,1,2].map(i=>Number(document.querySelectorAll('#reel-window-'+i+' img[data-face]')[2]?.dataset.face||0));settleSlots(ids);const start=document.getElementById('slot-start');if(start){start.disabled=coins<20;start.textContent=slotMode==='auto'?'もう一度オートで回す（20コイン）':'もう一度回す（20コイン）'}}
 </script>
+
+<style>
+/* Place the ball on the exact center of its winning pocket. */
+.ball-orbit{inset:10%!important}
+.ball-orbit i{top:-7px!important;left:50%;margin-left:-7px;z-index:8;will-change:top,transform}
+.ball-orbit.landed i{top:-7px!important;transform:scale(.88);box-shadow:0 0 0 3px #fff6bd99,0 0 16px #fff}
+.ball-orbit.drop-effect i{animation:ballPocketSettle .68s cubic-bezier(.2,.75,.25,1) both!important}
+@keyframes ballPocketSettle{0%{top:-18px;transform:rotate(0) scale(1.05)}28%{top:-12px;transform:rotate(180deg) scale(.92)}52%{top:-4px;transform:rotate(390deg) scale(.8)}72%{top:-10px;transform:rotate(560deg) scale(.95)}100%{top:-7px;transform:rotate(720deg) scale(.88)}}
+.wheel-number.landed-pocket{z-index:7!important;outline:3px solid #fff1a5;outline-offset:2px;box-shadow:0 0 14px #fff,0 0 22px #ffe17b}
+/* Restore the earlier, quicker vertical slot motion. */
+.reel-strip{transition:transform .12s linear!important}
+.reel-window.rolling .reel-strip{filter:blur(1.2px)!important}
+</style>
+<script>
+/* Keep pocket, ball, result, and payout tied to one roulette number. */
+let pocketEffectNumber=null;
+const alignWheelBeforePocketFix=alignWheel;
+alignWheel=function(){alignWheelBeforePocketFix();const w=document.querySelector('.wheel'),o=w?.querySelector('.ball-orbit');if(!w||!o)return;const settled=!casinoBusy&&Number.isInteger(casinoLast);o.style.setProperty('--ball-stop-angle',(-2520+casinoBallTargetAngle)+'deg');o.classList.toggle('landed',settled);const animate=settled&&pocketEffectNumber!==casinoLast;o.classList.toggle('drop-effect',animate);w.querySelectorAll('.wheel-number').forEach(el=>el.classList.toggle('landed-pocket',settled&&Number(el.textContent)===casinoLast));if(animate)pocketEffectNumber=casinoLast};
+const renderRouletteBeforePocketFix=window.renderRoulette;
+window.renderRoulette=function(){renderRouletteBeforePocketFix();alignWheel()};
+window.playRoulette=function(){const total=betTotal();if(!total||coins<total||casinoBusy)return;const number=Math.floor(Math.random()*37);casinoBallTargetAngle=wheelOrder.indexOf(number)*360/37;pocketEffectNumber=null;coins-=total;save();casinoBusy=true;renderRoulette();alignWheel();const w=document.querySelector('.wheel'),o=w?.querySelector('.ball-orbit');if(w&&o){w.classList.remove('spin');o.classList.remove('landed','drop-effect');void w.offsetWidth;w.classList.add('spin')}const lines=['さあ、氷見の海風に乗せて回すよ！','ボールが走り出したよ。数字にも注目！','イワシんの目の前を駆け抜けるよ！','そろそろ止まるかな？最後まで見ててね！'];let i=0;clearInterval(dealerTalk);dealerTalk=setInterval(()=>{const c=document.getElementById('dealer-comment');if(c)c.textContent=lines[Math.min(i++,3)]},850);setTimeout(()=>{clearInterval(dealerTalk);let payout=0;for(const key in casinoBets){const value=casinoBets[key];if(key==='n'+number)payout+=value*36;else if((key==='red'&&redNums.includes(number))||(key==='black'&&number>0&&!redNums.includes(number))||(key==='even'&&number>0&&number%2===0)||(key==='odd'&&number%2===1)||(key==='low'&&number>0&&number<=18)||(key==='high'&&number>=19)||(key==='doz1'&&number>0&&number<=12)||(key==='doz2'&&number>=13&&number<=24)||(key==='doz3'&&number>=25))payout+=value*(key.startsWith('doz')?3:2)}coins+=payout;casinoLast=number;casinoBusy=false;casinoBets={};save();renderRoulette();alignWheel();setResult(payout?'的中！ '+payout+'コイン獲得！':'はずれ。次の勝負へ！',payout?'win':'lose');const result=document.getElementById('wheel-result');if(result)result.innerHTML='結果：<b>'+number+'</b> '+(number===0?'緑':redNums.includes(number)?'赤':'黒')+' ／ '+(payout?'配当 '+payout:'配当なし');const c=document.getElementById('dealer-comment');if(c)c.textContent=payout?'お見事！イワシんもびっくり！':'惜しい！次は当ててね！'},4200)};
+const playSlotsBeforeRestore=window.playSlots;
+window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];coins-=20;save();slotSpinRun++;slotReelStops=[false,false,false];slotTimer=true;renderSlots();[0,1,2].forEach(i=>{const box=document.getElementById('reel-window-'+i),strip=box.querySelector('.reel-strip');box.classList.add('rolling');strip.style.transform='';slotReelTimers[i]=setInterval(()=>{const n=Math.floor(Math.random()*slotStamps.length);strip.innerHTML=Array.from({length:9},(_,j)=>slotFace(i,(n+j)%slotStamps.length)).join('');strip.style.transform='translateY(-'+(Math.random()*78+5)+'%)'},95)});if(slotMode==='auto'){[0,1,2].forEach(i=>slotAutoTimeouts.push(setTimeout(()=>stopSlots(i),1800+i*650)))}setResult(slotMode==='auto'?'オートでリールが順番に止まります':'リールごとの停止ボタンを押してね！')};
+</script>
