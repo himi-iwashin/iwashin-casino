@@ -272,3 +272,8 @@ function slotFinishIfDone(){if(slotReelStops.some(v=>!v))return;slotTimer=null;s
 window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];coins-=20;save();slotSpinRun++;slotReelStops=[false,false,false];slotTimer=true;renderSlots();[0,1,2].forEach(i=>{const box=document.getElementById('reel-window-'+i),strip=box.querySelector('.reel-strip');box.classList.add('rolling');strip.style.transform='';slotReelTimers[i]=setInterval(()=>{const n=Math.floor(Math.random()*slotStamps.length);strip.innerHTML=Array.from({length:9},(_,j)=>slotFace(i,(n+j)%slotStamps.length)).join('');strip.style.transform='translateY(-'+(15+Math.random()*45)+'%)'},190)});if(slotMode==='auto'){[0,1,2].forEach(i=>slotAutoTimeouts.push(setTimeout(()=>stopSlots(i),2400+i*850)))}setResult(slotMode==='auto'?'ゆっくり回転中。リールが順番に止まります':'リールごとの停止ボタンを押してね！')};
 </script>
 <style>.reel-strip{transition:transform .24s ease-out!important}.reel-window.rolling .reel-strip{filter:blur(.55px)!important}</style>
+
+<script>
+/* Re-enable the next-spin control immediately after all three reels settle. */
+function slotFinishIfDone(){if(slotReelStops.some(v=>!v))return;slotTimer=null;slotReelTimers.forEach(t=>{if(t)clearInterval(t)});slotReelTimers=[null,null,null];slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];const ids=[0,1,2].map(i=>Number(document.querySelectorAll('#reel-window-'+i+' img[data-face]')[2]?.dataset.face||0));settleSlots(ids);const start=document.getElementById('slot-start');if(start){start.disabled=coins<20;start.textContent=slotMode==='auto'?'もう一度オートで回す（20コイン）':'もう一度回す（20コイン）'}}
+</script>
