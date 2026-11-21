@@ -301,3 +301,44 @@ window.playRoulette=function(){const total=betTotal();if(!total||coins<total||ca
 const playSlotsBeforeRestore=window.playSlots;
 window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAutoTimeouts.forEach(clearTimeout);slotAutoTimeouts=[];coins-=20;save();slotSpinRun++;slotReelStops=[false,false,false];slotTimer=true;renderSlots();[0,1,2].forEach(i=>{const box=document.getElementById('reel-window-'+i),strip=box.querySelector('.reel-strip');box.classList.add('rolling');strip.style.transform='';slotReelTimers[i]=setInterval(()=>{const n=Math.floor(Math.random()*slotStamps.length);strip.innerHTML=Array.from({length:9},(_,j)=>slotFace(i,(n+j)%slotStamps.length)).join('');strip.style.transform='translateY(-'+(Math.random()*78+5)+'%)'},95)});if(slotMode==='auto'){[0,1,2].forEach(i=>slotAutoTimeouts.push(setTimeout(()=>stopSlots(i),1800+i*650)))}setResult(slotMode==='auto'?'オートでリールが順番に止まります':'リールごとの停止ボタンを押してね！')};
 </script>
+<style>
+/* Compact mobile roulette so the wheel, betting area, and spin button stay together. */
+@media(max-width:460px){
+.panel:has(.roulette-floor){padding:8px 9px 10px;min-height:0}
+.panel:has(.roulette-floor) .game-head{margin-bottom:5px}
+.panel:has(.roulette-floor) .game-head h2{font-size:18px}
+.panel:has(.roulette-floor) .game-head p,.panel:has(.roulette-floor) .tag{display:none}
+.panel:has(.roulette-floor)>.mascot-guide{margin:2px 0 5px;padding:4px 8px;min-height:0;gap:6px;border-radius:10px}
+.panel:has(.roulette-floor)>.mascot-guide .portrait{width:40px;min-width:40px}
+.panel:has(.roulette-floor)>.mascot-guide .portrait img{max-height:36px}
+.panel:has(.roulette-floor)>.mascot-guide .bubble{font-size:12px;line-height:1.25}
+.panel:has(.roulette-floor)>.mascot-guide small{display:none}
+.roulette-floor{padding:6px;border-width:3px;border-radius:14px}
+.casino-stage{gap:2px}
+.wheel-wrap{gap:2px}
+.wheel{width:min(43vw,178px);border-width:6px}
+.wheel-caption{display:none}
+.dealer-mini{min-height:35px;padding:2px 6px;gap:5px;margin:0 0 3px;font-size:12px}
+.dealer-mini .iwasvg{width:34px;flex:0 0 34px}
+.dealer-info{gap:0}
+.dealer-info b{font-size:11px}
+.dealer-info small{font-size:10px;line-height:1.1}
+.wheel-result{min-height:32px;margin:3px 0;padding:4px;font-size:14px;border-radius:8px}
+.wheel-result b{font-size:18px}
+.roulette-layout{grid-template-columns:25px repeat(12,minmax(0,1fr));gap:1px}
+.roulette-num,.zero-cell{min-height:25px;font-size:9px;padding:0;border-radius:3px}
+.outside-row{grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;margin-top:2px}
+.outside-bet{min-height:24px;font-size:8px;padding:1px 0}
+.roulette-controls{gap:4px;margin-top:5px}
+.chips{gap:4px;flex-wrap:nowrap}
+.chip{width:33px;height:33px;font-size:10px}
+.bet-summary{font-size:10px;white-space:nowrap}
+.clear-bets{font-size:10px;padding:5px 7px;white-space:nowrap}
+.wheel-instructions{display:none}
+.roulette-floor>.roulette-controls{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px;margin-top:7px}
+.roulette-floor>.roulette-controls .play{grid-column:2;grid-row:1;padding:8px 8px;font-size:13px;white-space:nowrap}
+.roulette-floor>.roulette-controls .bet-summary{grid-column:1;grid-row:1;font-size:10px}
+.roulette-floor>.roulette-controls .result{grid-column:1/-1;grid-row:2;min-height:15px;font-size:11px;line-height:1.2;text-align:center}
+}
+@media(max-width:360px){.wheel{width:min(41vw,156px)}.roulette-layout{grid-template-columns:22px repeat(12,minmax(0,1fr))}.roulette-num,.zero-cell{font-size:8px}.outside-bet{font-size:7px}.roulette-floor>.roulette-controls .play{font-size:12px}}
+</style>
