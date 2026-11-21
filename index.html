@@ -397,6 +397,7 @@ finishBJ=function(){
   if(p<=21&&!natural){while(d<17){bjState.d.push(bjState.deck.pop());d=btotal(bjState.d)}}const houseNatural=bjState.d.length===2&&btotal(bjState.d)===21;let payout=0,message;
   if(p>21){message='あなたのバースト。イワシんの勝ち！';cardDealerMessage='21をこえちゃったね。今回はイワシんの勝ち！'}
   else if(natural&&houseNatural){payout=wager;message='おたがいブラックジャック。引き分けで'+payout+'コイン返却！';cardDealerMessage='おたがいブラックジャック！引き分けだね。'}
+  else if(houseNatural&&!natural){message='ディーラーがブラックジャック。イワシんの勝ち！';cardDealerMessage='ブラックジャックだ！今回はイワシんの勝ちだよ。'}
   else if(natural){payout=Math.round(wager*2.5);message='ブラックジャック！3:2配当、'+payout+'コイン払い戻し！';cardDealerMessage='ブラックジャック！3:2配当だよ。お見事！'}
   else if(d>21||p>d){payout=wager*2;message=d>21?'イワシんがバースト！'+payout+'コイン払い戻し！':'勝ち！'+payout+'コイン払い戻し！';cardDealerMessage='やったね！今回はあなたの勝ちだよ！'}
   else if(p===d){payout=wager;message='引き分け。'+payout+'コイン返却！';cardDealerMessage='同じ点数だね。引き分け！'}
