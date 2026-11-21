@@ -341,4 +341,9 @@ window.playSlots=function(){if(slotReelStops.some(v=>!v)||coins<20)return;slotAu
 .roulette-floor>.roulette-controls .result{grid-column:1/-1;grid-row:2;min-height:15px;font-size:11px;line-height:1.2;text-align:center}
 }
 @media(max-width:360px){.wheel{width:min(41vw,156px)}.roulette-layout{grid-template-columns:22px repeat(12,minmax(0,1fr))}.roulette-num,.zero-cell{font-size:8px}.outside-bet{font-size:7px}.roulette-floor>.roulette-controls .play{font-size:12px}}
+</style><style>
+</style><style>
+/* Mobile roulette: clear pockets with a fuller casino-wheel frame */
+@media(max-width:460px){.wheel{width:min(76vw,286px);border-width:11px}.wheel-number{width:auto!important;height:auto!important;min-width:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;display:block!important;font-size:clamp(10px,2.8vw,12px)!important;line-height:1!important;text-shadow:0 1px 3px #00160f,0 0 4px #00160f}.wheel-number.landed-pocket{outline:0!important;box-shadow:none!important;color:#fff1a8!important;text-shadow:0 0 7px #ffe27b,0 2px 3px #00160f!important}.wheel-wrap{position:relative;isolation:isolate}.wheel-wrap:before,.wheel-wrap:after{content:"✦\A ◉\A ✦";white-space:pre;position:absolute;z-index:-1;top:56%;transform:translateY(-50%);width:34px;height:104px;display:grid;place-items:center;text-align:center;line-height:2.15;color:#f6df9c;font-size:13px;font-weight:900;border:1px solid #d7bc70;border-radius:13px;background:linear-gradient(180deg,#18563f,#092c25);box-shadow:inset 0 0 0 3px #ffffff12,0 5px 12px #001a12}.wheel-wrap:before{left:4px}.wheel-wrap:after{right:4px}}
+@media(max-width:360px){.wheel{width:min(72vw,238px)}.wheel-wrap:before,.wheel-wrap:after{width:28px;height:92px;font-size:11px}}
 </style>
