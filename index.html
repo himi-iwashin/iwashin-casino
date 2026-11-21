@@ -406,3 +406,18 @@ finishBJ=function(){
 };
 panel.addEventListener('click',e=>{if(!e.target.closest('#bj-double'))return;const state=bjState;if(!state||state.done||state.p.length!==2||state.doubleDown)return;const wager=state.bet||25;if(coins<wager)return;coins-=wager;state.bet=wager*2;state.doubleDown=true;state.p.push(state.deck.pop());save();finishBJ()});
 </script>
+
+<script>
+/* A separate, collapsible rules reference for blackjack. */
+const renderCardsBeforeRules=window.renderCards;
+window.renderCards=function(){
+  renderCardsBeforeRules();
+  if(cardMode!=='blackjack')return;
+  const modes=panel.querySelector('.card-modes');
+  if(!modes)return;
+  const details=document.createElement('details');details.className='blackjack-rules';
+  details.innerHTML='<summary>ブラックジャックのルールを見る</summary><div class="blackjack-rules-body"><ol><li><b>目標</b>：手札の合計を21に近づけます。21を超えるとバーストで負けです。</li><li><b>カードの点数</b>：2〜10は数字どおり、J・Q・Kは10点。Aは1点または11点として、21を超えない方で数えます。</li><li><b>カードを配る</b>：25コインを賭けて2枚受け取ります。ディーラーは1枚を伏せ、あなたは「もう1枚」か「勝負する」を選びます。</li><li><b>ディーラーの手番</b：あなたが勝負を選んだ後に伏せ札を公開します。合計16以下は引き、17以上で止まります。</li><li><b>勝敗と払い戻し</b>：勝ちは賭け金と同額の利益がつき、25コイン賭けなら合計50コインを払い戻します。引き分けは25コイン返却、負けやバーストは払い戻しなしです。</li><li><b>ブラックジャック</b>：最初の2枚だけで21なら成立。ディーラーもブラックジャックなら引き分けで25コイン返却。自分だけなら3:2配当で、25コイン賭けの場合は合計63コインを払い戻します。</li><li><b>ダブルダウン</b>：最初の2枚の後に賭け金と同額を追加し、カードを1枚だけ引いて自動で勝負します。追加分が必要なので、所持コインが足りない場合は選べません。</li></ol></div>';
+  modes.insertAdjacentElement('afterend',details);
+};
+document.head.insertAdjacentHTML('beforeend','<style>.blackjack-rules{margin:0 0 14px;border:1px solid #5e8794;border-radius:12px;background:#0a2942;color:#e5f3eb}.blackjack-rules summary{padding:10px 13px;cursor:pointer;font-weight:850;color:#ffe08a}.blackjack-rules-body{padding:0 14px 10px;font-size:13px;line-height:1.65}.blackjack-rules-body ol{margin:4px 0 0;padding-left:22px}.blackjack-rules-body li{margin:6px 0}.blackjack-rules-body b{color:#ffe08a}@media(max-width:520px){.blackjack-rules-body{font-size:12px;line-height:1.55}}</style>');
+</script>
