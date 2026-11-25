@@ -678,3 +678,9 @@ button, a, [role="button"] { transition-property: color, background-color, borde
 #panel button:hover, #panel button:active, #panel button:focus, #panel button:hover *, #panel button:active *, #panel button:focus * { transform: none !important; animation: none !important; }
 #panel .baccarat-reveal, #panel .mini-dice.reveal { transform: none !important; animation: none !important; }
 </style>
+
+<style>
+/* Remove all motion from casino panel choices and start controls; keep their color feedback. */
+#panel button, #panel button *, #panel button::before, #panel button::after { animation: none !important; transition: none !important; transform: none !important; }
+#panel a, #panel [role="button"] { animation: none !important; transition: none !important; transform: none !important; }
+</style>
