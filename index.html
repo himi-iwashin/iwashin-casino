@@ -671,3 +671,10 @@ button, a, [role="button"] { transition-property: color, background-color, borde
 .baccarat-reveal, .mini-dice.reveal, .roulette-display .fish-result { animation: none !important; transform: none !important; }
 .casino-zone, .tab, .chip, .mini-card-btn, .mini-actions button, .poker-pick, .iwashin-main-link { transition-property: background-color, border-color, color, box-shadow !important; }
 </style>
+
+<style>
+/* Static casino controls on tap; selected colors remain visible. */
+#panel button, #panel button *, #panel button::before, #panel button::after { animation: none !important; transition: none !important; }
+#panel button:hover, #panel button:active, #panel button:focus, #panel button:hover *, #panel button:active *, #panel button:focus * { transform: none !important; animation: none !important; }
+#panel .baccarat-reveal, #panel .mini-dice.reveal { transform: none !important; animation: none !important; }
+</style>
