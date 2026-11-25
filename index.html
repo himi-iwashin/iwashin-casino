@@ -644,3 +644,17 @@ panel.addEventListener('click',e=>{const variant=e.target.closest('[data-slot-va
  blackjack:['ブラックジャック（25コイン）',[['ブラックジャック','63コイン'],['勝ち','50コイン'],['引き分け','25コイン返却'],['負け','0コイン']], '払い戻し合計の例です。'],
  poker:['5枚ポーカー（25コイン）',[['ワンペア','10コイン'],['ツーペア','25コイン'],['スリーカード','50コイン'],['ストレート','75コイン'],['フラッシュ','100コイン'],['フルハウス','150コイン'],['フォーカード','250コイン'],['ストレートフラッシュ','500コイン']], '払い戻し合計。ノーペアは0コインです。']
 };function key(){const h=p.querySelector('h2')?.textContent||'',v=document.querySelector('.tab.active')?.dataset.view||'';if(/ビンゴ/.test(h))return'bingo';if(/バカラ/.test(h))return'baccarat';if(/七並べ/.test(h))return'seven';if(/神経衰弱/.test(h))return'memory';if(/スピード/.test(h))return'speed';if(/大富豪|ダイフゴ/.test(h))return'daifugo';if(/サイコロ/.test(h))return'dice';if(/ブラックジャック/.test(p.textContent))return'blackjack';if(/ポーカー/.test(p.textContent))return'poker';if(v==='roulette')return'roulette';if(v==='slots')return'slots';return''}function update(){const k=key(),rule=p.querySelector('.gameRule');let box=p.querySelector('.payout-guide');if(!k){box?.remove();return}if(!box){box=document.createElement('section');box.className='payout-guide';(rule||p).insertAdjacentElement(rule?'afterend':'beforeend',box)}if(box.dataset.finalKind===k)return;box.dataset.finalKind=k;const [title,items,note]=rows[k];box.innerHTML='<h3>💰 払い戻し早見表</h3><span class="payout-example">'+title+'：当たると戻るコイン</span><table><thead><tr><th>結果</th><th>払い戻し</th></tr></thead><tbody>'+items.map(r=>'<tr><td>'+r[0]+'</td><td><b>'+r[1]+'</b></td></tr>').join('')+'</tbody></table><small>'+note+' 払い戻しは賭け金を含む合計です。</small>'}function polish(){p.querySelectorAll('.mini-table .mini-table').forEach(x=>{if(x.dataset.resultMotion)return;x.dataset.resultMotion='1';x.classList.add('baccarat-reveal')});p.querySelectorAll('.mini-dice').forEach(x=>{if(x.dataset.resultMotion)return;x.dataset.resultMotion='1';x.classList.add('reveal')})}function selected(){p.querySelectorAll('[data-bet]').forEach(x=>{const yes=x.dataset.bet===window.__iwashinBet;x.classList.toggle('is-selected',yes);x.setAttribute('aria-pressed',String(yes))})}const observer=new MutationObserver(()=>requestAnimationFrame(()=>{update();polish();selected()}));observer.observe(p,{childList:true,subtree:true});update();polish();selected()})();</script>
+
+<style>
+/* Keep touched casino icons and cards still; touch devices can retain hover styling. */
+@media (hover: none), (pointer: coarse) {
+  .casino-zone:hover, .casino-zone:active, .play:hover, .play:active, .iwashin-main-link:hover, .iwashin-main-link:active, .chip:active, .poker-pick.held { transform: none !important; }
+  .casino-zone, .play, .iwashin-main-link, .chip, .poker-pick { animation: none !important; }
+}
+</style>
+
+<style>
+/* Selected Baccarat icons stay highlighted without a bounce or lift. */
+.mini-actions [data-bet].is-selected, .is-selected { transform: none !important; animation: none !important; }
+@media (hover: hover) { .casino-zone:hover, .play:hover, .iwashin-main-link:hover { transform: none !important; } }
+</style>
