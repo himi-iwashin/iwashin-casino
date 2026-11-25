@@ -658,3 +658,16 @@ panel.addEventListener('click',e=>{const variant=e.target.closest('[data-slot-va
 .mini-actions [data-bet].is-selected, .is-selected { transform: none !important; animation: none !important; }
 @media (hover: hover) { .casino-zone:hover, .play:hover, .iwashin-main-link:hover { transform: none !important; } }
 </style>
+
+
+                 /* Stop all button/icon bounce while keeping selected color states intact. */
+<style>
+button, a, [role="button"] { animation: none !important; }
+button:hover, button:active, a:hover, a:active, [role="button"]:hover, [role="button"]:active, .chip.selected, .poker-pick.held, .poker-pick.held .stamp-card, .mini-actions [data-bet].is-selected, .is-selected, .casino-zone:hover, .iwashin-main-link:hover { transform: none !important; }
+button, a, [role="button"] { transition-property: color, background-color, border-color, box-shadow, filter !important; }
+</style>
+<style>
+/* Disable repeated bounce on casino selections and game-result icons; colors stay selected. */
+.baccarat-reveal, .mini-dice.reveal, .roulette-display .fish-result { animation: none !important; transform: none !important; }
+.casino-zone, .tab, .chip, .mini-card-btn, .mini-actions button, .poker-pick, .iwashin-main-link { transition-property: background-color, border-color, color, box-shadow !important; }
+</style>
